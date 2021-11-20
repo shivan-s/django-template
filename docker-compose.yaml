@@ -1,0 +1,21 @@
+version: "3.7"
+
+services:
+  db:
+    image: "postgres:latest"
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_NAME=optom-chitchat-test
+      - POSTGRES_USER=optom-chitchat-test
+      - POSTGRES_PASSWORD=test_password
+      - POSTGRES_HOST=0.0.0.0
+      - POSTGRES_PORT=5432
+    ports:
+      - ${POSTGRES_PORT-5432}:${POSTGRES_PORT-5432}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    restart: always
+
+volumes:
+  postgres_data:
