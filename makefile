@@ -7,5 +7,6 @@ migrate:
 	pipenv run python manage.py makemigrations
 	pipenv run python manage.py migrate
 
+.PHONY: test
 test:
 	pipenv run pytest -vv
