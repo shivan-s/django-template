@@ -11,7 +11,7 @@ def main():
         logging.warning(
             "DJANGO_DEVELOPMENT not set, defaulting to production set up"
         )
-    settings_file = "condig.settings.prod"
+    settings_file = "config.settings.prod"
     if os.getenv("DJANGO_DEVELOPMENT") == "yes":
         logging.debug("Entering development settings")
         settings_file = "config.settings.dev"
