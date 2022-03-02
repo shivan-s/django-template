@@ -6,8 +6,8 @@ services:
     env_file:
       - .env
     environment:
-      - POSTGRES_NAME=optom-chitchat-test
-      - POSTGRES_USER=optom-chitchat-test
+      - POSTGRES_NAME=example-database
+      - POSTGRES_USER=example-database
       - POSTGRES_PASSWORD=test_password
       - POSTGRES_HOST=0.0.0.0
       - POSTGRES_PORT=5432
