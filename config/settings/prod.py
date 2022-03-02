@@ -15,8 +15,6 @@ SECURE_HSTS_SECONDS = 3600
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
-DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
-GS_BUCKET_NAME = "food-vision-images_prod"
 
 # logging
 LOGGING = {
