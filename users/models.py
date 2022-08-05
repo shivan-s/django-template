@@ -1,10 +1,11 @@
+"""Model for CustomUser."""
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-
 from hashid_field import HashidAutoField
 
-from config.settings.base import HASHID_FIELD_SALT
+from config.settings import HASHID_FIELD_SALT
 
 
 class CustomUser(AbstractUser):

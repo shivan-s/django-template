@@ -1,20 +1,31 @@
+"""Contain root settings for Django Application."""
+
 import os
 from pathlib import Path
 
 import sentry_sdk
+from django.core.management.utils import get_random_secret_key
 from sentry_sdk.integrations.django import DjangoIntegration
 
-sentry_sdk.init(
-    dsn="https://e6f0642a202245578f28fac3db87210c@o1039828.ingest.sentry.io/6062991",
-    integrations=[DjangoIntegration()],
-    traces_sample_rate=1.0,
-    send_default_pii=True,
-)
+SENTRY_DSN_1 = os.getenv("SENTRY_DSN_1", None)
+SENTRY_DSN_2 = os.getenv("SENTRY_DSN_2", None)
+SENTRY_SAMPLE_RATE = os.getenv("SENTRY_SAMPLE_RATE", "1.0")
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+if SENTRY_DSN_1 is not None and SENTRY_DSN_2 is not None:
+    sentry_sdk.init(
+        dsn=f"https://{SENTRY_DSN_1}.ingest.sentry.io/{SENTRY_DSN_2}",
+        integrations=[DjangoIntegration()],
+        traces_sample_rate=float(SENTRY_SAMPLE_RATE),
+        send_default_pii=True,
+    )
 
-SECRET_KEY = os.getenv("SECRET_KEY")
-HASHID_FIELD_SALT = os.getenv("HASHID_FIELD_SALT")
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+SITE_ID = 1
+
+SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
+HASHID_FIELD_SALT = os.getenv("HASHID_FIELD_SALT", get_random_secret_key())
 
 # Default primary key field type
 
@@ -71,16 +82,18 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": os.getenv("POSTGRES_NAME"),
-        "USER": os.getenv("POSTGRES_USER"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "HOST": os.getenv("POSTGRES_HOST"),
-        "PORT": os.getenv("POSTGRES_PORT"),
+if os.getenv("DJANGO_DEVELOPMENT", 0) == "1":
+    # local development
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": os.getenv("POSTGRES_NAME"),
+            "USER": os.getenv("POSTGRES_USER"),
+            "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+            "HOST": os.getenv("POSTGRES_HOST"),
+            "PORT": os.getenv("POSTGRES_PORT"),
+        }
     }
-}
 
 # Password validation
 
@@ -119,3 +132,54 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = (str(BASE_DIR.joinpath("static")),)
 STATIC_ROOT = str(BASE_DIR.joinpath("staticfiles"))
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# Logging
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "file": {
+            "level": "WARNING",
+            "class": "logging.FileHandler",
+            "filename": "debug.log",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["file"],
+            "level": "WARNING",
+            "propagate": True,
+        },
+    },
+    "root": {
+        "handlers": ["file"],
+        "level": "WARNING",
+    },
+}
+
+# Producution settings
+DEBUG = False
+ALLOWED_HOSTS = [
+    "localhost",
+    "0.0.0.0",
+    # TODO: where is this going to be hosted?
+]
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_HSTS_SECONDS = 3600
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# Development settings
+if os.getenv("DJANGO_DEVELOPMENT", 0) == "1":
+    DEBUG = True
+    ALLOWED_HOSTS = ["*"]
+    CSRF_COOKIE_SECURE = False
+    SESSION_COOKIE_SECURE = False
+    SECURE_SSL_REDIRECT = False
+    del SECURE_PROXY_SSL_HEADER
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+    SECURE_HSTS_PRELOAD = False

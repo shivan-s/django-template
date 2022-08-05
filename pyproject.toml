@@ -1,0 +1,50 @@
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 79
+default_section = "THIRDPARTY"
+known_first_party = ["users", "config"]
+known_third_party = ["django", "hashid_field", "sentry_sdk"]
+
+[tool.black]
+line-length = 79
+include = '\.pyi?%'
+
+[tool.pyright]
+include = ["."]
+exclude = [".venv"]
+venvPath = "."
+venv = ".venv"
+
+[tool.mypy]
+mypy_path = "."
+plugins = ["mypy_django_plugin.main"]
+warn_unused_ignores = true
+warn_redundant_casts = true
+check_untyped_defs = true
+strict_optional = false
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+addopts = "--cov-report html"
+testpaths = ["tests"]
+DJANGO_SETTINGS_MODULE = "config.settings"
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+log_format = "%(asctime)s %(levelname)s %(message)s"
+log_date_format = "%Y-%m-%d %H:%M:%S"
+
+[tool.coverage.run]
+omit = ["tests/*", "*/migrations/*"]
+
+[[tool.mypy.overrides]]
+module = "*.migrations.*"
+ignore_errors = true
+
+[tool.django-stubs]
+django_settings_module = "config.settings"
+
+[tool.mypy_django_plugin]
+ignore_missing_model_attributes = true
+
+[tool.pydocstyle]
+ignore = "D100,D101,D102,D103,D104,D105,D106,D107"

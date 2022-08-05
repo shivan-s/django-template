@@ -1,10 +1,10 @@
+---
 name: Build
 
 on:
   push:
-    branches: [ main ]
-    pull_request:
-      branches: [ main ]
+  pull_request:
+    branches: [main]
 
 jobs:
   build:
@@ -14,9 +14,9 @@ jobs:
       db:
         image: postgres:latest
         env:
-          POSTGRES_NAME: example_db
-          POSTGRES_USER: example_db
-          POSTGRES_PASSWORD: pword
+          POSTGRES_NAME: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
           POSTGRES_HOST: 127.0.0.1
           POSTGRES_PORT: 5432
         ports:
@@ -26,28 +26,33 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - id: checkout
+        name: Checkout
+        uses: actions/checkout@v3
 
-      - name: Install Python, Pipenv and Pipfile packages
-        uses: palewire/install-python-pipenv-pipfile@v2
+      - id: install-python
+        name: Install Python
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.8
+          python-version: "3.10"
+          cache: pipenv
 
-      - name: Lint code
-        uses: py-actions/flake8@v1
-        with:
-          ignore: "E712,W503,F401,F403,F405"
-          exclude: "^tests*,*/migrations/*"
-          max-line-length: "120"
-
-      - name: Setting environment and running tests
-        env:
-          TEST_VAR: no
-        run: >
-          pipenv run pytest -vv
-
-      - name: Build successful
+      - id: install-pipenv
+        name: Install pipenv
         run: |
-          echo Build is successful
+          python -m pip install --upgrade --no-cache-dir pip
+          python -m pip install --no-cache-dir pipenv
+
+      - id: install-dependancies
+        name: Install dependencies
+        run: |
+          cd backend
+          pipenv sync --dev --python ${{ steps.install-python.outputs.python-version }}
+
+      - id: test-tox
+        name: Test with tox
+        run: |
+          python -m pip install tox tox-gh-actions
+          tox

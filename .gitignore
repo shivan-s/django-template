@@ -134,3 +134,6 @@ dmypy.json
 
 # ansible
 ansible.log
+
+# macos
+.DS_Store/
