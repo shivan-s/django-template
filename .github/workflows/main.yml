@@ -48,7 +48,6 @@ jobs:
       - id: install-dependancies
         name: Install dependencies
         run: |
-          cd backend
           pipenv sync --dev --python ${{ steps.install-python.outputs.python-version }}
 
       - id: test-tox
