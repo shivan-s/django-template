@@ -10,6 +10,7 @@ django-hashid-field = "*"
 psycopg2-binary = "*"
 sentry-sdk = "*"
 whitenoise = "*"
+django-stubs = {extras = ["compatible-mypy"], version = "*"}
 
 [dev-packages]
 pytest = "*"
