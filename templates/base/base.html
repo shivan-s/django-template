@@ -1,15 +1,27 @@
 {% load static %}
-
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Optom ChitChat</title>
-  </head>
-  <body>
-    <header></header>
-    {% block content %} {% endblock %}
-    <footer></footer>
-  </body>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="description" content="description" />
+        <meta name="keywords" content="keywords" />
+        <meta name="viewport" content="width=device-width" />
+        <title>Title</title>
+    </head>
+    <body>
+        <header>
+            Header
+        </header>
+        {% block content %}
+            Content
+        {% endblock content %}
+        <footer>
+            Footer
+        </footer>
+    </body>
+    <!-- Htmx -->
+    <script src="https://unpkg.com/htmx.org@1.8.0"></script>
+    <!-- Alpinejs -->
+    <script src="//unpkg.com/alpinejs" defer></script>
 </html>
+<!-- https://github.com/timonweb/django-tailwind -->

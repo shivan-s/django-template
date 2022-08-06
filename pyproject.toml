@@ -58,3 +58,6 @@ ignore_missing_model_attributes = true
 
 [tool.pydocstyle]
 ignore = "D100,D101,D102,D103,D104,D105,D106,D107"
+
+[tool.djlint]
+profile="django"
